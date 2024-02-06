@@ -1,0 +1,11 @@
+//get obj file
+$gcc hello_static.c -c -o hello_static.o
+
+//create static lib
+$ar r libhello_static.a hello_static.o
+
+//link static lib
+$gcc hello.c -o hello -lhello_static -L.
+
+//run
+./hello

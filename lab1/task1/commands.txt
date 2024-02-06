@@ -1,0 +1,10 @@
+$gcc hello.c -o hello
+
+//unresolved symbols
+nm ./hello
+
+//dependencies
+ldd ./hello
+
+//run
+./hello

@@ -1,0 +1,10 @@
+//make dynamic lib
+$gcc hello_dynamic.c -c -fpic -o hello_dynamic.o -Wall
+$gcc hello_dynamic.o -o libhello_dynamic.so -shared -Wall
+
+//link dyn lib
+$gcc hello.c -o hello -lhello_dynamic -L. -Wall
+
+LD_LIBRARY_PATH=./ ./hello
+export LD_LIBRARY_PATH=./
+./hello
