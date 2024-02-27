@@ -1,0 +1,1 @@
+strace -o wget_strace_output.txt wget kernel.org
