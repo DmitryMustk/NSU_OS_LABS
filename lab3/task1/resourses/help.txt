@@ -1,0 +1,19 @@
+|------------------------------------------------------------------------------|
+|                     Reverse and Copy Utility - Help                          |
+|------------------------------------------------------------------------------|
+|                                                                              |
+|-Usage:                                                                       |
+|   ./task1 [PATH_TO_DIR]                                                 |
+|                                                                              |
+|-Description:                                                                 |
+|    A command-line utility for copying a directory in reverse order.          |
+|    This program takes a source directory path and creates a new directory    |
+|    with the reversed name, copying all regular files from the source         |
+|    directory to the target directory, reversing their names and content.     |
+|                                                                              |
+|-Options:                                                                     |
+|    -h, --help      Display this help message.                                |
+|                                                                              |
+|                                                                              |
+|------------------------------------------------------------------------------|
+
