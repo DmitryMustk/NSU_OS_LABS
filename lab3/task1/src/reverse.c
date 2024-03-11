@@ -1,5 +1,4 @@
 #include "reverse.h"
-#include "util.h"
 
 #include <dirent.h>
 #include <string.h>
@@ -29,19 +28,24 @@ void get_dir_name(const char* path_to_dir, char* dir_name) {
     strcpy(dir_name, path_to_dir + start_index + 1);
 }
 
-char* reverse_name(char* name) {
+char* reverse_name(char* name, error_code error) {
     size_t name_size = strlen(name);
     char* reversed_name = malloc(sizeof(char) * name_size);
     if(reversed_name == NULL) {
-        
+        error = malloc_error;
+        return NULL;
     }
     for(size_t i = 0; i < name_size / 2; ++i) {
         reversed_name[i] = name[name_size - i - 1];
         reversed_name[name_size - i - 1] = name[i];
     }
+    return reversed_name;
 }
 
-int create_reverse_dir(char* dir_name) {
-    reverse_name(dir_name);
-    mkdir(dir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+int create_reverse_dir(char* dir_name, error_code error) {
+    char* reversed_dir_name = reverse_name(dir_name);
+    if(error != no_error) {
+        return 0;
+    }
+    return mkdir(dir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 }

@@ -27,26 +27,17 @@ int main(int argc, char** argv) {
         return ERROR;
     }
 
-    #if 0
-    if(create_reverse_dir(path_to_dir) != 0) {
-        perror("Failed to create reverse dir");
-        return ERROR;
-    }
-    #endif
-
+    error_code error = no_error;
     char* dir_name = malloc(sizeof(char) * 256);
     get_dir_name(path_to_dir, dir_name);
-    // reverse_name(dir_name);
-    create_reverse_dir(dir_name);
-    printf("|||%s|||\n", dir_name);
-    
-    // char a = 'a';
-    // char b = 'b';
-    // swap(&a, &b);
-    // char* test = "ol\0";
-    // swap(test, test + 1);
-    // sw(&test);
-    // printf("%s", test);
-    // printf("a = %c\nb = %c\n", a, b);
+    if(create_reverse_dir(dir_name, error) != 0) {
+        perror("Can't create a directory");
+        return ERROR;
+    }
+    if(error == malloc_error) {
+        perror("Can't allocate memmory for name string");
+        return ERROR;
+    } 
+    free(dir_name);
     return 0;
 }
