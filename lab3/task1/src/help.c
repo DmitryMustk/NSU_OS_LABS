@@ -7,7 +7,7 @@
 
 int is_need_help(int argc, char** argv) {
     for(size_t i = 1; i < argc; ++i) {
-        if(strcmp(argv[i], "-h") || strcmp(argv[i], "--help")){
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0){
             return 1;
         }
     }
