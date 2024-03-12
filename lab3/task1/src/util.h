@@ -7,6 +7,11 @@
 typedef enum error_code {
     no_error = 0,
     malloc_error,
+    opendir_error,
+    closedir_error,
+    fcreate_error,
+    fopen_error,
+    fwrite_error,
 } error_code;
 
 void swap(char* a, char* b);
