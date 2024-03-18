@@ -19,5 +19,4 @@ typedef enum error_code {
 } error_code;
 
 void swap(char* a, char* b);
-void print_error(error_code* error);
 #endif

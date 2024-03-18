@@ -1,4 +1,5 @@
 #include "reverse.h"
+#include "help.h"
 
 #include <dirent.h>
 #include <string.h>
@@ -7,6 +8,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+
+int process_command_args(int argc, char **argv) {
+    if(argc != 2) {
+        printf("Wrong number of args. Please check the --help page\n");
+        return ERROR;
+    }
+
+    if(is_need_help(argc, argv)) {
+        print_help();
+        return 0;
+    }
+
+    char* path_to_dir = argv[1];
+    if(!is_path_correct(path_to_dir)) {
+        printf("Incorrect path. Please check the --help page\n");
+        return ERROR;
+    }
+    error_code error = no_error;
+    char* dir_name = malloc(sizeof(char) * 256);
+    get_dir_name(path_to_dir, dir_name);
+    char* reversed_dir_name = create_reverse_dir(dir_name, &error);
+    if(error != no_error) {
+        perror("Can't create a directory");
+        free(dir_name);
+        free(reversed_dir_name);
+        return ERROR;
+    }
+    if(error == malloc_error) {
+        perror("Can't allocate memmory for name string");
+        free(dir_name);
+        free(reversed_dir_name);
+        return ERROR;
+    }
+    reverse_dir_content(path_to_dir, reversed_dir_name, &error);
+    if(error != no_error){
+        perror("Error");
+        free(dir_name);
+        free(reversed_dir_name);
+        return ERROR;
+    }
+
+    free(dir_name);
+    free(reversed_dir_name);
+    return 0;
+}
 
 int is_path_correct(const char* path_to_dir) {
     DIR* dir = opendir(path_to_dir);
@@ -81,7 +127,6 @@ char* create_file_path(char* file_name, char* path, error_code* error) { //throw
 }
 
 int create_regular_file(char* file_path, error_code* error) { //throws fcreate_error
-    // printf("azaza");
     FILE* fp = fopen(file_path, "w");
     if(fp == NULL) {
         *error = fcreate_error;
@@ -141,7 +186,7 @@ int reverse_file_content(char* src_path, char* dst_path, error_code* error) { //
         *error = fopen_error;
         return ERROR;
     }
-    uint64_t src_size = get_file_size(src_path);
+    uint64_t src_size = get_file_size(src_path, error);
     if(src_size == -1) {
         fclose(src_stream);
         fclose(dst_stream);
@@ -165,19 +210,19 @@ int reverse_file_content(char* src_path, char* dst_path, error_code* error) { //
     }
     reverse_string(buffer, src_size);
 
-    size_t bytes_writen_total = 0;
-    while (bytes_written_total < file_size) {
-        size_t bytes_to_write = file_size - bytes_written_total;
-        if (bytes_to_write > BUFFER_SIZE) {
-            bytes_to_write = BUFFER_SIZE;
+    size_t bytes_written_total = 0;
+    while (bytes_written_total < src_size) {
+        size_t bytes_to_write = src_size - bytes_written_total;
+        if (bytes_to_write > CHAR_BUF_SIZE) {
+            bytes_to_write = CHAR_BUF_SIZE;
         }
-        size_t bytes_written = fwrite(buffer + bytes_written_total, 1, bytes_to_write, dst_file);
+        size_t bytes_written = fwrite(buffer + bytes_written_total, 1, bytes_to_write, dst_stream);
         if (bytes_written != bytes_to_write) {
-            printf("Ошибка при записи в файл %s\n", dst_filename);
+            *error = fwrite_error;
             free(buffer);
-            fclose(src_file);
-            fclose(dst_file);
-            return;
+            fclose(src_stream);
+            fclose(dst_stream);
+            return ERROR;
         }
         bytes_written_total += bytes_written;
     }

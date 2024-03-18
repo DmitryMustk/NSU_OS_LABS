@@ -11,4 +11,5 @@ int reverse_dir_content(char* path_to_dir, char* reversed_dir_name, error_code* 
 int reverse_regular_file(char* file_name, char* path, char* reversed_dir_name, error_code* error);
 int reverse_file_content(char* src_path, char* dst_path, error_code* error);
 char* create_file_path(char* file_name, char* path, error_code* error);
+int process_command_args(int argc, char** argv);
 #endif

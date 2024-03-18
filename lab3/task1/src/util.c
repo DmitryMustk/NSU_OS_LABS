@@ -6,6 +6,3 @@ void swap(char* a, char* b) {
     *b = tmp;
 }
 
-void print_error(error_code *error) {
-    
-}
