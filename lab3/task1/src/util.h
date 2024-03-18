@@ -1,7 +1,7 @@
 #ifndef TASK1_UTIL_H
 #define TASK1_UTIL_H
 
-#define CHAR_BUF_SIZE 4096
+#define CHAR_BUF_SIZE 1
 #define ERROR -1
 
 typedef enum error_code {
@@ -12,7 +12,12 @@ typedef enum error_code {
     fcreate_error,
     fopen_error,
     fwrite_error,
+    mkdir_error,
+    ftell_error,
+    fseek_error,
+    fread_error,
 } error_code;
 
 void swap(char* a, char* b);
+void print_error(error_code* error);
 #endif

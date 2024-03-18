@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 int is_path_correct(const char* path_to_dir) {
     DIR* dir = opendir(path_to_dir);
@@ -45,14 +46,16 @@ char* reverse_name(char* name, error_code* error) { //throws malloc_error
     return reversed_name;
 }
 
-int create_reverse_dir(char* dir_name, error_code* error) { //throws malloc_error
+char* create_reverse_dir(char* dir_name, error_code* error) { //throws malloc_error
     char* reversed_dir_name = reverse_name(dir_name, error);
     if(*error != no_error) {
         return 0;
     }
     int ret =  mkdir(reversed_dir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    free(reversed_dir_name);
-    return ret;
+    if(ret != 0) {
+        *error = mkdir_error;
+    }
+    return reversed_dir_name;
 }
 
 char* create_file_path(char* file_name, char* path, error_code* error) { //throws malloc_error
@@ -78,6 +81,7 @@ char* create_file_path(char* file_name, char* path, error_code* error) { //throw
 }
 
 int create_regular_file(char* file_path, error_code* error) { //throws fcreate_error
+    // printf("azaza");
     FILE* fp = fopen(file_path, "w");
     if(fp == NULL) {
         *error = fcreate_error;
@@ -86,6 +90,45 @@ int create_regular_file(char* file_path, error_code* error) { //throws fcreate_e
     fclose(fp);
     return 0;
 } 
+
+uint64_t get_file_size(const char* file_name, error_code* error) {
+    FILE* file_stream = fopen(file_name, "r");
+    if(file_stream == NULL) {
+        *error = fopen_error;
+        return ERROR;
+    }
+    uint64_t begin_pos = ftell(file_stream);
+    if(begin_pos == -1) {
+        *error = ftell_error;
+        fclose(file_stream);
+        return ERROR;
+    }
+    uint64_t size = 0;
+
+    int ret = fseek(file_stream, 0, SEEK_END);
+    if (ret == -1) {
+        *error = fseek_error;
+        fclose(file_stream);
+        return ERROR;
+    }
+
+    size = ftell(file_stream);
+    if(size == -1) {
+        *error = ftell_error;
+        fclose(file_stream);
+        return ERROR;
+    }
+    fclose(file_stream);
+    return size;
+}
+
+void reverse_string(char* string, uint64_t size) {
+    for(uint64_t i = 0, j = size - 1; i < j; ++i, --j) {
+        const char tmp = string[i];
+        string[i] = string[j];
+        string[j] = tmp;
+    }
+}
 
 int reverse_file_content(char* src_path, char* dst_path, error_code* error) { //throws fwrite_error, fopen_error
     FILE* src_stream = fopen(src_path, "r");
@@ -98,54 +141,80 @@ int reverse_file_content(char* src_path, char* dst_path, error_code* error) { //
         *error = fopen_error;
         return ERROR;
     }
-
-    char buffer[CHAR_BUF_SIZE];
-
-    size_t bytes_read;
-    while ((bytes_read = fread(buffer, sizeof(char), CHAR_BUF_SIZE, src_stream)) > 0) {
-        printf("|||%ld|||\n", bytes_read);
-        for(size_t i = 0, j = bytes_read - 1; i < j; ++i, --j) {
-            char tmp = buffer[i];
-            buffer[i] = buffer[j];
-            buffer[j] = tmp;
-        }
-        size_t bytes_written = fwrite(buffer, sizeof(char), bytes_read, dst_stream);
-        if(bytes_written != bytes_read) {
-            *error = fwrite_error;
-            fclose(src_stream);
-            fclose(dst_stream);
-            return ERROR;
-        }
+    uint64_t src_size = get_file_size(src_path);
+    if(src_size == -1) {
+        fclose(src_stream);
+        fclose(dst_stream);
+        return ERROR;
     }
+
+    char* buffer = malloc(sizeof(char) * src_size);
+    if(buffer == NULL) {
+        *error = malloc_error;
+        fclose(src_stream);
+        fclose(dst_stream);
+        return ERROR;
+    }
+    uint64_t bytes_read = fread(buffer, 1, src_size, src_stream);
+    if (bytes_read != src_size) {
+        *error = fread_error;
+        fclose(src_stream);
+        fclose(dst_stream);
+        free(buffer);
+        return ERROR;
+    }
+    reverse_string(buffer, src_size);
+
+    size_t bytes_writen_total = 0;
+    while (bytes_written_total < file_size) {
+        size_t bytes_to_write = file_size - bytes_written_total;
+        if (bytes_to_write > BUFFER_SIZE) {
+            bytes_to_write = BUFFER_SIZE;
+        }
+        size_t bytes_written = fwrite(buffer + bytes_written_total, 1, bytes_to_write, dst_file);
+        if (bytes_written != bytes_to_write) {
+            printf("Ошибка при записи в файл %s\n", dst_filename);
+            free(buffer);
+            fclose(src_file);
+            fclose(dst_file);
+            return;
+        }
+        bytes_written_total += bytes_written;
+    }
+
     fclose(src_stream);
     fclose(dst_stream);
+    free(buffer);
     return 0;
 }
 
 int reverse_regular_file(char* file_name, char* path, char* reversed_dir_name, error_code* error) { //throws malloc_error, fcreate_error
     char* reversed_file_name = reverse_name(file_name, error);
-    if(error != no_error) {
+    if(*error != no_error) {
         return ERROR;
     }
-    char* path_to_reversed_file = create_file_path(reversed_file_name, path, error);
-    char* path_to_orig_file = create_file_path(file_name, reversed_dir_name, error);
-    if(error != no_error) {
-        goto free;
-        return ERROR;
-    }
-    if(create_regular_file(path_to_reversed_file, error) != 0) {
-        goto free;
-        return ERROR;
-    } 
-
-    free:
+    char* path_to_reversed_file = create_file_path(reversed_file_name, reversed_dir_name, error);
+    char* path_to_orig_file = create_file_path(file_name, path, error);
+    if(*error != no_error) {
         free(reversed_file_name);
         free(path_to_reversed_file);
         free(path_to_orig_file);
+        return ERROR;
+    }
+    if(create_regular_file(path_to_reversed_file, error) != 0) {
+        free(reversed_file_name);
+        free(path_to_reversed_file);
+        free(path_to_orig_file);
+        return ERROR;
+    }
+    int ret = reverse_file_content(path_to_orig_file, path_to_reversed_file, error);
+    free(reversed_file_name);
+    free(path_to_reversed_file);
+    free(path_to_orig_file);
+    return ret;     
 }
 
-int reverse_dir_content(char* path_to_dir, char* reversed_dir_name, error_code* error) { //throws opendir_error, malloc_error
-                                                                        //close_dir_error
+int reverse_dir_content(char* path_to_dir, char* reversed_dir_name, error_code* error) { //throws opendir_error, malloc_error close_dir_error
     DIR* d;
     struct dirent* dir;
     d = opendir(path_to_dir);
@@ -154,14 +223,14 @@ int reverse_dir_content(char* path_to_dir, char* reversed_dir_name, error_code* 
         return ERROR;
     }
     while ((dir = readdir(d)) != NULL) {
-        if(dir->d_type != DT_REG) {
+        if(dir->d_type != DT_REG) 
             continue;
-        }
-        // int ret = reverse_regular_file(dir->d_name, error);
+        int ret = reverse_regular_file(dir->d_name, path_to_dir, reversed_dir_name, error);
+        if(ret != 0)
+            break;
     }
     int ret = closedir(d);
-    if(ret == -1) {
+    if(ret == -1) 
         *error = closedir_error;
-    }
     return ret;
 }

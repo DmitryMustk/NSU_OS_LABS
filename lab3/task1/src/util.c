@@ -5,3 +5,7 @@ void swap(char* a, char* b) {
     *a = *b;
     *b = tmp;
 }
+
+void print_error(error_code *error) {
+    
+}
