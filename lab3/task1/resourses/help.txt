@@ -3,7 +3,7 @@
 |------------------------------------------------------------------------------|
 |                                                                              |
 |-Usage:                                                                       |
-|   ./task1 [PATH_TO_DIR]                                                 |
+|   ./task1 [PATH_TO_DIR]                                                      |
 |                                                                              |
 |-Description:                                                                 |
 |    A command-line utility for copying a directory in reverse order.          |
