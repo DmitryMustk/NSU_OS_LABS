@@ -5,3 +5,4 @@ for link_name in "create_dir" "show_dir" "rm_dir" "create_file" "show_file" "rm_
 do
     ln ./build/task2 links/$link_name
 done
+echo "Links created successfuly"
