@@ -17,6 +17,4 @@ typedef enum error_code {
     fseek_error,
     fread_error,
 } error_code;
-
-void swap(char* a, char* b);
 #endif
