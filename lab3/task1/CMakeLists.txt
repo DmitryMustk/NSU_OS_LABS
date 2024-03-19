@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(task1)
 
-set(SRC src/main.c src/help.c src/reverse.c src/util.c)
+set(SRC src/main.c src/help.c src/reverse.c)
 
 add_executable(${PROJECT_NAME} ${SRC})
 
