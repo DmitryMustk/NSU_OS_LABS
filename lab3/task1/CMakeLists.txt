@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(task1)
+project(revncopy)
 
 set(SRC src/main.c src/help.c src/reverse.c)
 

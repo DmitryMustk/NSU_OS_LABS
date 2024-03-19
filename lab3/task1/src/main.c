@@ -8,5 +8,6 @@ int main(int argc, char** argv) {
         perror("Error: ");
         return ERROR;
     }
+    printf("Directory has been successfully reversed\n");
     return 0;
 }
