@@ -53,14 +53,15 @@ int process_command_args(int argc, char** argv) {
     if(strcmp(func_name, "create_hard_link") == 0) 
         return create_hard_link(argv[1], argv[2]);  
     if(strcmp(func_name, "create_sym_link") == 0) 
-        return create_sym_link(argv[1], argv[2]);   
+        return create_sym_link(argv[1], argv[2]);
+    if(strcmp(func_name, "change_file_permissons") == 0) 
+        return change_file_permissons(argv[1], argv[2]);   
 
     printf("Wrong link. Please check the -h --help\n");
     return ERROR;
 }
 
 //TODO: rewrite help.txt (add all the links and descrs)
-//TODO: add all the permission funcs
 
 int main(int argc, char** argv) {
     if(process_command_args(argc, argv) == ERROR) {
@@ -70,4 +71,3 @@ int main(int argc, char** argv) {
     printf("\nProgram has been executed successfuly\n");
     return 0;
 }
-
