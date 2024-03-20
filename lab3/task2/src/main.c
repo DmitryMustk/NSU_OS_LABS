@@ -21,7 +21,7 @@ int process_command_args(int argc, char** argv) {
 
     char func_name[FUNC_NAME_SIZE];
     get_func_name(argv[0], func_name);
-
+    //One arg funcs
     if(strcmp(func_name, "create_dir") == 0)
         return create_dir(argv[1]);
     if(strcmp(func_name, "show_dir") == 0)
@@ -49,7 +49,7 @@ int process_command_args(int argc, char** argv) {
         printf("Wrong number of args. Check -h --help\n");
         return ERROR;
     }
-    
+    //Two args funcs
     if(strcmp(func_name, "create_hard_link") == 0) 
         return create_hard_link(argv[1], argv[2]);  
     if(strcmp(func_name, "create_sym_link") == 0) 
@@ -60,8 +60,6 @@ int process_command_args(int argc, char** argv) {
     printf("Wrong link. Please check the -h --help\n");
     return ERROR;
 }
-
-//TODO: rewrite help.txt (add all the links and descrs)
 
 int main(int argc, char** argv) {
     if(process_command_args(argc, argv) == ERROR) {
