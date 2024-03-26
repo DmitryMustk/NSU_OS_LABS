@@ -56,7 +56,7 @@ int process_command_args(int argc, char **argv) {
 
 int is_path_correct(const char* path_to_dir) {
     DIR* dir = opendir(path_to_dir);
-    if(!dir){
+    if(dir == NULL){
         return 0;
     }
     closedir(dir);
