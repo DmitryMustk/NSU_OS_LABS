@@ -3,8 +3,8 @@
 |-------------------------------------------------------------------------------|
 |                                                                               |
 |-Usage:                                                                        |
-|   ./create_links.sh                                                           |                 
-|   ./file_utility_link [PATH_TO_FILE_OR_DIR]                                   |
+|   ./build.sh                                                                  |                 
+|   ./links/file_utility_link [PATH_TO_FILE_OR_DIR] [ARG_0]                     |
 |                                                                               |
 |-Description:                                                                  |
 |    A command-line utility for performing various file system operations.      |
@@ -12,6 +12,6 @@
 |    operation on the specified file or directory.                              | 
 |                                                                               |
 |-Actions:                                                                      |
-|    -h, --help      Display this help message.                                 |
+|    -h, --help                   Display this help message.                    |
 |                                                                               |
 |-------------------------------------------------------------------------------|
