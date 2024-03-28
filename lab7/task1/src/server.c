@@ -5,12 +5,25 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <time.h>
 
-#define BUF_SIZE 1024
 #define PORT 5005
 #define PORT_SIZE 10
+#define BUF_SIZE 1024
+#define TIME_SIZE 16
 
 #define ERROR -1
+
+char* get_current_time() {
+    time_t current_time;
+    struct tm *local_time_info;
+
+    current_time = time(NULL);
+
+    local_time_info = localtime(&current_time);
+
+    return asctime(local_time_info);
+}
 
 int main() {
     int serv_sock;
@@ -46,7 +59,8 @@ int main() {
             perror("getnameinfo error:");
             return ERROR;
         }
-        printf("Message: %sFrom: %s:%s\n\n", message, name, port);
+        char* cur_time_str = get_current_time();
+        printf("Message: %sFrom: %s:%s\nTime: %s\n", message, name, port, cur_time_str);
         sendto(serv_sock, message, str_len, 0, (struct sockaddr*)&clnt_addr, clnt_addr_size);
     }
 
