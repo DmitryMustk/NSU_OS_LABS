@@ -11,6 +11,7 @@
 #define PORT_SIZE 10
 #define BUF_SIZE 1024
 #define TIME_SIZE 16
+#define USER_COUNT 10
 
 #define ERROR -1
 
@@ -67,4 +68,3 @@ int main() {
     close(serv_sock);
     return 0;
 }
-

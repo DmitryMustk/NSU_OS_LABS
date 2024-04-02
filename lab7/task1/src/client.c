@@ -24,11 +24,15 @@ int main(void) {
 
     char message[BUF_SIZE];
     ssize_t str_len;
+    printf("Welcome to UDP echo server. Type your message or /q to quit\n");
     while(1) {
         printf("Client: ");
         fgets(message, BUF_SIZE, stdin);
+        if(strcmp(message, "/q\n") == 0) {
+            printf("Goodbye!\n");
+            break;
+        }
         sendto(sock, message, strlen(message), 0, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
-        
         str_len = recvfrom(sock, message, BUF_SIZE, 0, NULL, NULL);
         message[str_len] = '\0';
         printf("Server: %s\n", message);
