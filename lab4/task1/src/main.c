@@ -49,12 +49,21 @@ int heap_manipulations(void) {
 }
 
 
+int* get_local_addr(void) {
+    int a = 5;
+    return &a;
+}
+
 int main(void) {
     #ifdef a
 	print_var_adresses();
     while(1){
         sleep(1);
     }
+    #endif
+
+    #ifdef d
+    printf("%p", get_local_addr()); //contains NULL
     #endif
     
     #ifdef e
