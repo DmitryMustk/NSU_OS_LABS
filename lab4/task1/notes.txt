@@ -1,0 +1,11 @@
+Stack adresses:
+    7ffd549a7000-7ffd549c8000
+
+L v:7ffd549c6f20 <- in stack
+Lcv:7ffd549c6f24 <- in stack
+
+
+Static variable in /build/task1 - BSS/DATA
+Globals in /build/task1 - ninit -> BSS
+			   init -> Data
+Consts in ReadOnly Data section
