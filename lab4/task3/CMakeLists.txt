@@ -1,9 +1,12 @@
-cmake_minimum_required(VERSION 3.5.1)
-
+cmake_minimum_required(VERSION 3.10)
 project(task3)
 
-set(SRC src/main.c)
+set(SOURCES 
+    src/lib/my_stdlib.c
+    src/main.c
+)
 
-add_executable(${PROJECT_NAME} ${SRC})
+add_library(my_stdlib SHARED src/lib/my_stdlib.c)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../modules")
+add_executable(${PROJECT_NAME} ${SOURCES})
+target_link_libraries(${PROJECT_NAME} my_stdlib)
