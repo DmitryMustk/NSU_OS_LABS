@@ -38,7 +38,7 @@ int heap_manipulations(void) {
 
     char* buf2 = (char*)malloc(BUF_SIZE * sizeof(char));
     if(buf2 == NULL) {
-        perror("malloc error:");
+        perror("malloc error:");    
         return ERROR;
     }
     memcpy(buf2, message, msg_len);
@@ -55,7 +55,7 @@ int* get_local_addr(void) {
 }
 
 int main(void) {
-    #ifdef a
+    #ifdef A
 	print_var_adresses();
     while(1){
         sleep(1);
@@ -69,6 +69,27 @@ int main(void) {
     #ifdef e
     int ret = heap_manipulations();
     return ret;
+    #endif
+
+    #ifdef g
+    // setenv("MY_ENV_VAR", "init_val", 1);
+    char* env_val = getenv("MY_ENV_VAR");
+    if(env_val != NULL) {
+        printf("Init value of MY_ENV_VAR: %s\n", env_val);
+    }
+    else {
+        printf("MY_ENV_VAR is not set\n");
+    }
+
+    setenv("MY_ENV_VAR", "new_var", 1);
+    env_val = getenv("MY_ENV_VAR");
+    if(env_val != NULL) {
+        printf("New value of MY_ENV_VAR: %s\n", env_val);
+    }
+    else {
+        printf("MY_ENV_VAR is not set\n");
+    }
+
     #endif
     
     return 0;
