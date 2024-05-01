@@ -1,0 +1,5 @@
+watch stack:
+$watch -d -n1 "cat /proc//maps |grep -e'\[stack\]'"
+
+watch heap:
+$watch -d -n1 "cat /proc//maps 
