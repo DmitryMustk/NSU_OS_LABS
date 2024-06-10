@@ -1,0 +1,3 @@
+/home/ddmstk/Projects/NSU_OS_LABS/lab8/task1/build/CMakeFiles/task1.dir
+/home/ddmstk/Projects/NSU_OS_LABS/lab8/task1/build/CMakeFiles/edit_cache.dir
+/home/ddmstk/Projects/NSU_OS_LABS/lab8/task1/build/CMakeFiles/rebuild_cache.dir
